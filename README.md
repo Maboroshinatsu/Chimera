@@ -62,6 +62,19 @@ Chimera 什么都知道，但什么都不说。
 
 ---
 
+## 一键启动（已安装 Airi）
+
+```bash
+scripts\start.bat
+```
+
+按顺序启动 MaiBot → 代理 → Airi，等每个就绪再启动下一个。
+停止：`scripts\stop.bat`
+
+---
+
+## 手动启动
+
 ## 快速开始
 
 ### 1. 确保 MaiBot 在运行
@@ -137,6 +150,9 @@ GET  /health
 
 ```
 chimera/
+├── scripts/
+│   ├── start.bat                 # 一键启动（MaiBot → 代理 → Airi）
+│   └── stop.bat                  # 停止全部
 ├── packages/airsaka-proxy/       # 代理本体（约 300 行）
 ├── config/maibot/chat_prompts.toml
 ├── maibot-deskpet-plugin/        # 原有插件
