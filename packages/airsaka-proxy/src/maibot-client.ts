@@ -85,6 +85,16 @@ export class MaiBotClient {
       return null
     }
     this.pending.set(reqId, { onEvent, requestId: reqId })
+
+    // Timeout: finish with empty response if MaiBot doesn't reply (e.g., no_reply decision)
+    setTimeout(() => {
+      const stream = this.pending.get(reqId)
+      if (stream) {
+        this.pending.delete(reqId)
+        stream.onEvent({ type: 'done', requestId: reqId })
+      }
+    }, 30000)
+
     return reqId
   }
 
@@ -98,6 +108,7 @@ export class MaiBotClient {
   private sendMessage(text: string, requestId?: string): string | null {
     if (this.ws?.readyState !== WebSocket.OPEN) return null
     const reqId = requestId || randomUUID().replace(/-/g, '').slice(0, 12)
+    this.lastRequestId = reqId
     this.ws.send(JSON.stringify({
       type: 'input:text',
       data: { text },
@@ -107,25 +118,33 @@ export class MaiBotClient {
     return reqId
   }
 
+  private lastRequestId = ''
+
   private handleMessage(msg: any): void {
     const { type, data, request_id } = msg
-    const reqId = data?.request_id || request_id || msg.request_id
 
-    // Route to pending stream if exists
-    if (reqId && this.pending.has(reqId)) {
-      const stream = this.pending.get(reqId)!
-      switch (type) {
-        case 'output:text:delta':
-          stream.onEvent({ type: 'delta', delta: data?.delta || '', requestId: reqId })
-          break
-        case 'output:text:done':
-          if (data?.error) {
-            stream.onEvent({ type: 'error', error: data.error, requestId: reqId })
-          } else {
-            stream.onEvent({ type: 'done', requestId: reqId })
-          }
-          break
-      }
+    // Resolve ANY pending stream (single-user, so any response is for the current request)
+    if (this.pending.size === 0) return
+    const stream = [...this.pending.values()][0]
+    const reqId = data?.request_id || request_id || ''
+
+    switch (type) {
+      case 'output:text:delta':
+        stream.onEvent({ type: 'delta', delta: data?.delta || '', requestId: reqId })
+        break
+      case 'output:text':
+        stream.onEvent({ type: 'delta', delta: data?.text || '', requestId: reqId })
+        stream.onEvent({ type: 'done', requestId: reqId })
+        this.pending.delete(stream.requestId)
+        break
+      case 'output:text:done':
+        this.pending.delete(stream.requestId)
+        if (data?.error) {
+          stream.onEvent({ type: 'error', error: data.error, requestId: reqId })
+        } else {
+          stream.onEvent({ type: 'done', requestId: reqId })
+        }
+        break
     }
   }
 

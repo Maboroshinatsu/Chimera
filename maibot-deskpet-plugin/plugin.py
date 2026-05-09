@@ -226,9 +226,14 @@ class DeskpetPlugin(MaiBotPlugin):
 
     def _extract_text_from_message(self, message: Dict[str, Any]) -> str:
         """从 MaiBot 出站消息字典中提取纯文本。"""
+        # Log the first 300 chars to see what we're dealing with
+        self.ctx.logger.info(f"[Deskpet] Raw message keys: {list(message.keys())}, "
+                             f"has_processed_plain_text={bool(message.get('processed_plain_text'))}, "
+                             f"raw_message_len={len(message.get('raw_message', []))}")
+
         plain = message.get("processed_plain_text", "")
         if plain:
-            return str(plain)
+            return str(plain).removeprefix("[回复消息] ").removeprefix("[回复消息]")
 
         raw = message.get("raw_message", [])
         if isinstance(raw, list):

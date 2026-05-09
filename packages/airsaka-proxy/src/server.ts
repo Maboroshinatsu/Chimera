@@ -126,22 +126,31 @@ function handleModels(res: ServerResponse): void {
   res.end(JSON.stringify({
     object: 'list',
     data: [
-      { id: 'maibot', object: 'model', owned_by: 'maibot' },
+      {
+        id: 'maibot',
+        object: 'model',
+        created: 1700000000,
+        owned_by: 'maibot',
+        name: 'MaiBot (via Chimera)',
+        description: 'MaiBot AI through Chimera proxy'
+      },
     ],
   }))
 }
 
 const server = createServer((req, res) => {
+  console.log(`[req] ${req.method} ${req.url}`)
+
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
 
   if (req.method === 'OPTIONS') {
     res.writeHead(204).end()
     return
   }
 
-  if (req.method === 'GET' && req.url === '/v1/models') {
+  if (req.method === 'GET' && (req.url === '/v1/models' || req.url === '/models')) {
     handleModels(res)
     return
   }
@@ -151,7 +160,7 @@ const server = createServer((req, res) => {
     return
   }
 
-  if (req.method === 'POST' && req.url === '/v1/chat/completions') {
+  if (req.method === 'POST' && (req.url === '/v1/chat/completions' || req.url === '/chat/completions')) {
     let body = ''
     req.on('data', chunk => body += chunk)
     req.on('end', () => handleChatCompletions(req, res, body))
