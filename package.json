@@ -1,11 +1,10 @@
 {
-  "name": "@frankenstein/monorepo",
+  "name": "chimera",
   "private": true,
   "version": "0.1.0",
-  "description": "Frankenstein — AI Desktop Companion with Live2D",
+  "description": "Airi ↔ MaiBot bridge — OpenAI-compatible proxy",
   "scripts": {
-    "dev": "pnpm -C apps/desktop dev",
-    "build": "pnpm -C apps/desktop build",
-    "typecheck": "pnpm -r typecheck"
+    "dev": "pnpm -C packages/airsaka-proxy dev",
+    "start": "pnpm -C packages/airsaka-proxy start"
   }
 }

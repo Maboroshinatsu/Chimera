@@ -1,0 +1,23 @@
+{
+  "name": "airsaka-proxy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "OpenAI-compatible proxy that bridges Airi to MaiBot MessageGateway",
+  "type": "module",
+  "main": "./src/server.ts",
+  "scripts": {
+    "start": "tsx src/server.ts",
+    "dev": "tsx watch src/server.ts"
+  },
+  "dependencies": {
+    "ws": "^8.18.0",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "@types/node": "^20.0.0",
+    "@types/ws": "^8.5.0",
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.7.0"
+  }
+}
