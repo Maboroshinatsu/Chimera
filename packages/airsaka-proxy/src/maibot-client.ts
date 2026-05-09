@@ -110,7 +110,7 @@ export class MaiBotClient {
     const reqId = requestId || randomUUID().replace(/-/g, '').slice(0, 12)
     this.lastRequestId = reqId
     this.ws.send(JSON.stringify({
-      type: 'input:text',
+      type: 'ask',
       data: { text },
       timestamp: Date.now(),
       request_id: reqId,
@@ -133,6 +133,7 @@ export class MaiBotClient {
         stream.onEvent({ type: 'delta', delta: data?.delta || '', requestId: reqId })
         break
       case 'output:text':
+      case 'text':
         stream.onEvent({ type: 'delta', delta: data?.text || '', requestId: reqId })
         stream.onEvent({ type: 'done', requestId: reqId })
         this.pending.delete(stream.requestId)
