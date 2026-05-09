@@ -1,4 +1,5 @@
 import WebSocket from 'ws'
+import { randomUUID } from 'node:crypto'
 
 export interface MaiBotStreamEvent {
   type: 'delta' | 'done' | 'error'
@@ -96,7 +97,7 @@ export class MaiBotClient {
 
   private sendMessage(text: string, requestId?: string): string | null {
     if (this.ws?.readyState !== WebSocket.OPEN) return null
-    const reqId = requestId || crypto.randomUUID().replace(/-/g, '').slice(0, 12)
+    const reqId = requestId || randomUUID().replace(/-/g, '').slice(0, 12)
     this.ws.send(JSON.stringify({
       type: 'input:text',
       data: { text },
