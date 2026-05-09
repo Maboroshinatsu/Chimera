@@ -1,0 +1,11 @@
+{
+  "name": "@frankenstein/monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Frankenstein — AI Desktop Companion with Live2D",
+  "scripts": {
+    "dev": "pnpm -C apps/desktop dev",
+    "build": "pnpm -C apps/desktop build",
+    "typecheck": "pnpm -r typecheck"
+  }
+}

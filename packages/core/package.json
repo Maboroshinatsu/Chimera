@@ -1,0 +1,11 @@
+{
+  "name": "@frankenstein/core",
+  "version": "0.1.0",
+  "description": "Companion Runtime Core — state, coordination, event bus",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@frankenstein/shared": "workspace:*",
+    "pinia": "^2.3.0"
+  }
+}
